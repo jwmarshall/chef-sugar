@@ -40,10 +40,14 @@ class Chef
       end
 
 
-      def interface_ip_for(other, interface)
+      def interface_ip_for(other = nil, interface = nil)
         raise if other.nil?
-        interface ||= other['network']['default_interface']
-        return other['network']['interfaces'][interface]['addresses'].select { |_address, data| data['family'] == 'inet' }.first.first
+        if other.key? 'network'
+          interface ||= other['network']['default_interface']
+          return other['network']['interfaces'][interface]['addresses'].select { |_address, data| data['family'] == 'inet' }.first.first
+        else
+          return other['ipaddress']
+        end
       end
 
     end

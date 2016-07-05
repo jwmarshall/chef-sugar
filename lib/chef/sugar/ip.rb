@@ -38,11 +38,22 @@ class Chef
           other['ipaddress']
         end
       end
+
+
+      def interface_ip_for(other, interface)
+        raise if other.nil?
+        interface ||= other['network']['default_interface']
+        return other['network']['interfaces'][interface]['addresses'].select { |_address, data| data['family'] == 'inet' }.first.first
+      end
+
     end
 
     module DSL
       # @see Chef::Sugar::IP#best_ip_for
       def best_ip_for(other); Chef::Sugar::IP.best_ip_for(node, other); end
+
+      # @see Chef::Sugar::IP#interface_ip_for
+      def interface_ip_for(other, interface); Chef::Sugar::IP.interface_ip_for(other, interface); end
     end
   end
 end
